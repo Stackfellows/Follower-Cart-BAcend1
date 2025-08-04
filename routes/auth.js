@@ -38,10 +38,41 @@ module.exports = (transporter) => {
   };
 
   // ============================= // User Management Routes // =============================
-  // ... (Your existing user management routes here) ...
+  router.get("/allusers", async (req, res) => {
+    try {
+      const users = await User.find().select("-password");
+      res.status(200).json({ users });
+    } catch (err) {
+      console.error("Error fetching users:", err);
+      res.status(500).json({ msg: "Server error fetching users" });
+    }
+  });
 
   // ============================= // Order Management Routes // =============================
-  // ... (Your existing order management routes here) ...
+  router.get("/allOrders", async (req, res) => {
+    try {
+      const orders = await Order.find()
+        .populate("userId")
+        .sort({ createdAt: -1 });
+      res.status(200).json({ orders });
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+      res.status(500).json({ msg: "Server error fetching orders" });
+    }
+  });
+
+  // ============================= // Payment Routes // =============================
+  router.get("/allPayments", async (req, res) => {
+    try {
+      const payments = await Payment.find()
+        .populate("userId")
+        .sort({ createdAt: -1 });
+      res.status(200).json({ payments });
+    } catch (err) {
+      console.error("Error fetching payments:", err);
+      res.status(500).json({ msg: "Server error fetching payments" });
+    }
+  });
 
   // ============================= // Refund Routes // =============================
 
@@ -141,7 +172,6 @@ module.exports = (transporter) => {
         await Order.findByIdAndUpdate(refundRequest.orderId, {
           status: "Refunded",
         });
-        // Send a notification email to the user
         const emailSubject = "Your Refund Request Has Been Approved";
         const emailHtmlContent = `
           <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
@@ -160,7 +190,6 @@ module.exports = (transporter) => {
         await Order.findByIdAndUpdate(refundRequest.orderId, {
           status: "Refund Rejected",
         });
-        // Send a notification email to the user
         const emailSubject = "Your Refund Request Status";
         const emailHtmlContent = `
           <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
@@ -187,13 +216,21 @@ module.exports = (transporter) => {
   });
 
   // ============================= // BlogPost Routes // =============================
-  // ... (Your existing BlogPost routes here) ...
+  router.get("/allBlogPosts", async (req, res) => {
+    try {
+      const posts = await BlogPost.find().sort({ createdAt: -1 });
+      res.json({ posts });
+    } catch (err) {
+      console.error("Error fetching blog posts:", err);
+      res.status(500).json({ msg: "Server error fetching blog posts" });
+    }
+  });
 
   // ============================= // Cloudinary Image Upload/Deletion Routes // =============================
   // ... (Your existing Cloudinary routes here) ...
 
-  // ============================= // Payment Routes // =============================
-  // ... (Your existing Payment routes here) ...
+  // ============================= // Other User Routes // =============================
+  // ... (Your existing user management routes here) ...
 
   return router;
 };
