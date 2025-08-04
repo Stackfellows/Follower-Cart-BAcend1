@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const User = require("../models/User");
-const Order = require("../models/Order");
+const Order = require("../models/order");
 const Payment = require("../models/Payment");
 const BlogPost = require("../models/BlogPost");
 const Refund = require("../models/Refund"); // NEW: Import the Refund model
@@ -85,12 +85,10 @@ module.exports = (transporter) => {
       });
     } catch (err) {
       console.error("Refund Request Error:", err);
-      res
-        .status(500)
-        .json({
-          msg: "Server error during refund request",
-          error: err.message,
-        });
+      res.status(500).json({
+        msg: "Server error during refund request",
+        error: err.message,
+      });
     }
   });
 
@@ -105,12 +103,10 @@ module.exports = (transporter) => {
       res.status(200).json({ requests: refundRequests });
     } catch (err) {
       console.error("Error fetching refund requests:", err);
-      res
-        .status(500)
-        .json({
-          msg: "Server error fetching refund requests",
-          error: err.message,
-        });
+      res.status(500).json({
+        msg: "Server error fetching refund requests",
+        error: err.message,
+      });
     }
   });
 
@@ -125,11 +121,9 @@ module.exports = (transporter) => {
       }
 
       if (!["Approved", "Rejected"].includes(status)) {
-        return res
-          .status(400)
-          .json({
-            msg: "Invalid status provided. Must be 'Approved' or 'Rejected'.",
-          });
+        return res.status(400).json({
+          msg: "Invalid status provided. Must be 'Approved' or 'Rejected'.",
+        });
       }
 
       const refundRequest = await Refund.findByIdAndUpdate(
@@ -185,12 +179,10 @@ module.exports = (transporter) => {
       res.json({ msg: `Refund request updated to ${status}`, refundRequest });
     } catch (err) {
       console.error("Update Refund Error:", err);
-      res
-        .status(500)
-        .json({
-          msg: "Server error updating refund request",
-          error: err.message,
-        });
+      res.status(500).json({
+        msg: "Server error updating refund request",
+        error: err.message,
+      });
     }
   });
 
